@@ -1,36 +1,46 @@
 -- Creación de Tablespace (equivalente en MariaDB sería usar una base de datos)
-CREATE DATABASE catering;
+-- Crear la base de datos (si aún no existe)
+CREATE DATABASE IF NOT EXISTS catering;
 USE catering;
 
 -------------------------
--- Creación de usuario --
+-- Crear el usuario (si aún no existe)
 -------------------------
-SELECT user FROM mysql.user;
-CREATE USER 'dataProyect'@'localhost' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON catering.* TO 'dataProyect'@'localhost';
+CREATE USER IF NOT EXISTS 'usuario'@'localhost' IDENTIFIED BY '1234';
+
+-- Otorgar privilegios al usuario
+GRANT ALL PRIVILEGES ON catering.* TO 'usuario'@'localhost';
+
+-- Aplicar los cambios de privilegios
 FLUSH PRIVILEGES;
 
 ---------------------
--- Creación de rol --
+-- Crear el rol (si aún no existe)
 ---------------------
--- MariaDB no soporta roles de forma nativa, por lo que esta parte se debe simular mediante la creación de un usuario con permisos específicos. Sin embargo, desde MariaDB 10.0.5 en adelante sí es posible usar roles.
+DROP ROLE IF EXISTS 'desarrollador';
 CREATE ROLE 'desarrollador';
 
 ----------------------------
--- Otorgar permisos a rol --
+-- Otorgar permisos al rol
 ----------------------------
-GRANT CREATE, INSERT, SELECT, UPDATE, DELETE, ALTER, DROP, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE
+GRANT CREATE, INSERT, SELECT, UPDATE, DELETE, ALTER, DROP, CREATE VIEW
 ON catering.* TO 'desarrollador';
+GRANT SELECT ON mysql.user TO 'usuario'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Aplicar los cambios de privilegios
 FLUSH PRIVILEGES;
 
 ---------------------------
--- Otorgar rol a usuario --
+-- Otorgar rol al usuario
 ---------------------------
-GRANT 'desarrollador' TO 'elbicho';
+GRANT 'desarrollador' TO 'usuario'@'localhost';
+
+-- Aplicar los cambios de privilegios
 FLUSH PRIVILEGES;
 
 ---------------------------
 -- Conectar con el usuario --
 ---------------------------
 -- Para conectarse con el usuario en MariaDB, puedes hacer:
--- mysql -u elbicho -p'1234' -h localhost catering
+-- mysql -u usuario -p'1234' -h localhost catering
