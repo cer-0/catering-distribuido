@@ -1,0 +1,59 @@
+This guide is for the master and slave servers
+
+1.-Check the hostname and IP on Master Server
+
+    1.1 hosname
+    kinlo@KinloDebian:~$ hostname
+    KinloDebian
+
+    1.2 IP  
+    kinlo@KinloDebian:~$ ip addr show
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+        valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host noprefixroute 
+        valid_lft forever preferred_lft forever
+    2: wlp2s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+        link/ether 40:a3:cc:6c:de:4b brd ff:ff:ff:ff:ff:ff
+    --> inet 192.168.0.161/24 brd 192.168.0.255 scope global dynamic noprefixroute wlp2s0
+        valid_lft 195sec preferred_lft 195sec
+        inet6 fe80::3cd2:8572:b68d:bed7/64 scope link noprefixroute 
+        valid_lft forever preferred_lft forever
+
+2.-Make sure Maria DB server has been installed on your sistem
+
+    kinlo@KinloDebian:~$ sudo systemctl status mariadb
+    ● mariadb.service - MariaDB 10.11.6 database server
+        Loaded: loaded (/lib/systemd/system/mariadb.service; enabled; preset: enabled)
+    --> Active: active (running) since Fri 2024-09-13 21:38:15 CST; 3 days ago
+        Docs: man:mariadbd(8)
+                https://mariadb.com/kb/en/library/systemd/
+        Process: 835 ExecStartPre=/usr/bin/install -m 755 -o mysql -g root -d /var/run/mysqld (code>
+        Process: 854 ExecStartPre=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (cod>
+        Process: 872 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] && VAR= ||   VAR=`cd>
+        Process: 1193 ExecStartPost=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (c>
+        Process: 1198 ExecStartPost=/etc/mysql/debian-start (code=exited, status=0/SUCCESS)
+    Main PID: 951 (mariadbd)
+        Status: "Taking your SQL requests now..."
+        Tasks: 8 (limit: 37880)
+        Memory: 244.2M
+            CPU: 17.590s
+        CGroup: /system.slice/mariadb.service
+                └─951 /usr/sbin/mariadbd
+    
+3.- Ensure that port 3306 has been allowed on the firewall
+    
+    kinlo@KinloDebian:~$ sudo ufw status
+    Status: inactive
+
+    kinlo@KinloDebian:~$ sudo ufw enable
+    Firewall is active and enabled on system startup
+
+    kinlo@KinloDebian:~$ sudo ufw status
+    Status: active
+
+    To                         Action      From
+    --                         ------      ----
+    3306                       ALLOW       Anywhere                  
+    3306 (v6)                  ALLOW       Anywhere (v6)   

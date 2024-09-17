@@ -1,0 +1,42 @@
+1.-Open "/etc/mysql/mariadb.conf.d/50-server.cnf" file
+
+    kinlo@KinloDebian:~$ sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf
+    #Comment out the line 27 using the # character 
+    #and add following lines below of '[mysqld]' section
+    blind-address = IP_MASTER
+    server-id=UNIQUE IDENTIFIER
+    report_host=MASTER HOSTANAME
+    #
+    log_bin=/var/log/mysql/mariadb-bin
+    log_bin_index=/var/log/mysql/relay-bin.index
+    #
+    relay_log=/var/log/mysql/relay-bin
+    relay_log_index=/var/log/mysql/relay-bin.index
+
+2.- Restart MariaDB service to apply the changes
+
+    kinlo@KinloDebian:~$ sudo systemctl restart mariadb
+
+3.- Create a dabase user  for the replication process
+
+    kinlo@KinloDebian:~$ sudo mysql -uroot -p
+
+    #Create a new user called "rep_user" user for the
+    #replication service on the master node 
+
+    MariaDB [(none)]> create user rep_user@IP-of-Slave Identified by 'rep_user_PWD';
+    
+    #Grant the privileges to replicate for rep_user user 
+    
+    MariaDB [(none)]> grant replication slave on *.* to rep_user@IP-of-slave;
+    
+    #Reload database
+
+    MariaDB [(none)]> flush privileges;
+
+    #Verify the status of the master server and
+    #make a note of parameters file and position
+    show master status\G
+
+
+
