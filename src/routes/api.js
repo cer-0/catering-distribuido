@@ -176,7 +176,6 @@ router.post('/update-employee', async (req, res) => {
         await connection.query(
             "UPDATE EMPLEADO SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, CORREO_EMPLEADO = ?, LADA = ?, TELEFONO = ?, ROL_EMPLEADO_ID = ?, BILINGUE_ID = ?, SUCURSAL_ID = ? WHERE ID = ?",
             [
-                id,
                 nombre,
                 apellido_paterno,
                 apellido_materno,
@@ -185,7 +184,8 @@ router.post('/update-employee', async (req, res) => {
                 telefono,
                 rol_de_empleado,
                 bilingue,
-                sucursal
+                sucursal,
+                id
             ]
         );
 
